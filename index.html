@@ -1,12 +1,11 @@
+<!DOCTYPE html>
 <html lang="zh-CN">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   BTC 离线密码学代币系统
-  </title>
-  <style>
-   :root {
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC 离线密码学代币系统</title>
+    <style>
+        :root {
             --primary-color: #f7931a; /* Bitcoin Orange */
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
@@ -144,130 +143,81 @@
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
         }
-  </style>
- </head>
- <body>
-  <div class="container">
-   <div class="header">
-    <h1>
-     BTC 离线代币系统
-    </h1>
-    <p>
-     基于 ECDSA 密码学的完全离线转账
-    </p>
-   </div>
-   <div class="card">
-    <div class="balance-container">
-     <div class="label">
-      当前余额
-     </div>
-     <div class="balance-value" id="balance">
-      0.00
-     </div>
-     <div>
-      Tokens
-     </div>
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>BTC 离线代币系统</h1>
+        <p>基于 ECDSA 密码学的完全离线转账</p>
     </div>
-   </div>
-   <div class="tabs">
-    <button class="tab-btn active" data-manus_click_id="1" data-manus_clickable="true" onclick="showTab('identity')">
-     身份
-    </button>
-    <button class="tab-btn" data-manus_click_id="2" data-manus_clickable="true" onclick="showTab('transfer')">
-     发送
-    </button>
-    <button class="tab-btn" data-manus_click_id="3" data-manus_clickable="true" onclick="showTab('receive')">
-     接收
-    </button>
-    <button class="tab-btn" data-manus_click_id="4" data-manus_clickable="true" onclick="showTab('mining')">
-     挖矿/提现
-    </button>
-   </div>
-   <!-- 身份面板 -->
-   <div class="tab-content active card" id="identity">
-    <h2>
-     我的身份
-    </h2>
-    <div class="alert alert-info" id="no-identity-msg">
-     尚未生成身份，请点击下方按钮开始。
+
+    <div class="card">
+        <div class="balance-container">
+            <div class="label">当前余额</div>
+            <div id="balance" class="balance-value">0.00</div>
+            <div>Tokens</div>
+        </div>
     </div>
-    <div id="identity-info" style="display:none;">
-     <span class="label">
-      我的收款地址 (公钥):
-     </span>
-     <div class="address-box" id="my-public-key">
-     </div>
-     <button class="secondary-btn" onclick="copyText('my-public-key')">
-      复制地址
-     </button>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('identity')">身份</button>
+        <button class="tab-btn" onclick="showTab('transfer')">发送</button>
+        <button class="tab-btn" onclick="showTab('receive')">接收</button>
+        <button class="tab-btn" onclick="showTab('mining')">挖矿/提现</button>
     </div>
-    <button data-manus_click_id="5" data-manus_clickable="true" id="gen-identity-btn" onclick="generateNewIdentity()">
-     生成新身份
-    </button>
-    <p style="font-size:0.8rem; color:#888;">
-     * 身份信息保存在浏览器本地，请勿清除缓存。
-    </p>
-   </div>
-   <!-- 转账面板 -->
-   <div class="tab-content card" id="transfer">
-    <h2>
-     生成转账凭证
-    </h2>
-    <span class="label">
-     接收方公钥:
-    </span>
-    <input id="dest-pubkey" placeholder="粘贴接收方的公钥" type="text"/>
-    <span class="label">
-     转账金额:
-    </span>
-    <input id="send-amount" placeholder="0.00" step="0.01" type="number"/>
-    <button onclick="createTransferVoucher()">
-     生成凭证字符串
-    </button>
-    <div id="voucher-result" style="display:none;">
-     <span class="label">
-      转账凭证 (请复制发给对方):
-     </span>
-     <textarea id="voucher-output" readonly="" rows="5"></textarea>
-     <button class="secondary-btn" onclick="copyText('voucher-output')">
-      复制凭证
-     </button>
+
+    <!-- 身份面板 -->
+    <div id="identity" class="tab-content active card">
+        <h2>我的身份</h2>
+        <div id="no-identity-msg" class="alert alert-info">尚未生成身份，请点击下方按钮开始。</div>
+        <div id="identity-info" style="display:none;">
+            <span class="label">我的收款地址 (公钥):</span>
+            <div id="my-public-key" class="address-box"></div>
+            <button class="secondary-btn" onclick="copyText('my-public-key')">复制地址</button>
+        </div>
+        <button id="gen-identity-btn" onclick="generateNewIdentity()">生成新身份</button>
+        <p style="font-size:0.8rem; color:#888;">* 身份信息保存在浏览器本地，请勿清除缓存。</p>
     </div>
-   </div>
-   <!-- 接收面板 -->
-   <div class="tab-content card" id="receive">
-    <h2>
-     验证并接收
-    </h2>
-    <span class="label">
-     粘贴收到的凭证:
-    </span>
-    <textarea id="voucher-input" placeholder="粘贴对方发来的 Base64 字符串" rows="5"></textarea>
-    <button onclick="processReceiveVoucher()">
-     验证并接收代币
-    </button>
-    <div id="receive-status">
+
+    <!-- 转账面板 -->
+    <div id="transfer" class="tab-content card">
+        <h2>生成转账凭证</h2>
+        <span class="label">接收方公钥:</span>
+        <input type="text" id="dest-pubkey" placeholder="粘贴接收方的公钥">
+        <span class="label">转账金额:</span>
+        <input type="number" id="send-amount" placeholder="0.00" step="0.01">
+        <button onclick="createTransferVoucher()">生成凭证字符串</button>
+        
+        <div id="voucher-result" style="display:none;">
+            <span class="label">转账凭证 (请复制发给对方):</span>
+            <textarea id="voucher-output" rows="5" readonly></textarea>
+            <button class="secondary-btn" onclick="copyText('voucher-output')">复制凭证</button>
+        </div>
     </div>
-   </div>
-   <!-- 挖矿/提现面板 -->
-   <div class="tab-content card" id="mining">
-    <h2>
-     挖矿与提现
-    </h2>
-    <div class="alert alert-info">
-     每 2 秒可点击一次生成 1.00 代币。
+
+    <!-- 接收面板 -->
+    <div id="receive" class="tab-content card">
+        <h2>验证并接收</h2>
+        <span class="label">粘贴收到的凭证:</span>
+        <textarea id="voucher-input" rows="5" placeholder="粘贴对方发来的 Base64 字符串"></textarea>
+        <button onclick="processReceiveVoucher()">验证并接收代币</button>
+        <div id="receive-status"></div>
     </div>
-    <button class="mining-btn" id="mining-btn" onclick="mineToken()">
-     点击挖矿 (每2秒)
-    </button>
-    <hr/>
-    <button class="withdraw-btn" onclick="withdraw()">
-     提现显示手机号
-    </button>
-   </div>
-  </div>
-  <script>
-   // --- 核心状态 ---
+
+    <!-- 挖矿/提现面板 -->
+    <div id="mining" class="tab-content card">
+        <h2>挖矿与提现</h2>
+        <div class="alert alert-info">每 2 秒可点击一次生成 1.00 代币。</div>
+        <button id="mining-btn" class="mining-btn" onclick="mineToken()">点击挖矿 (每2秒)</button>
+        <hr>
+        <button class="withdraw-btn" onclick="withdraw()">提现显示手机号</button>
+    </div>
+</div>
+
+<script>
+    // --- 核心状态 ---
     let state = {
         balance: 0,
         publicKey: null,
@@ -520,6 +470,7 @@
 
     // 启动
     init();
-  </script>
- </body>
+</script>
+
+</body>
 </html>
