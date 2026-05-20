@@ -221,7 +221,16 @@
         if (savedState) {
             const parsed = JSON.parse(savedState);
             state.balance = parsed.balance || 0;
-            state.usedNonces = parsed.usedNonces || [];
+            
+            // 兼容旧版 usedNonces (纯字符串数组) 并转为带时间戳的对象格式
+            const rawNonces = parsed.usedNonces || [];
+            state.usedNonces = rawNonces.map(n => {
+                if (typeof n === 'string') {
+                    return { id: n, t: Date.now() };
+                }
+                return n;
+            });
+
             if (parsed.keyPair) {
                 state.publicKeyBase64 = parsed.keyPair.pub;
                 // 恢复密钥对象
@@ -345,8 +354,12 @@
                 throw new Error('接收方地址不匹配');
             }
 
+            // 自动清理 7 天前的旧 nonce (7 * 24 * 60 * 60 * 1000)
+            const sevenDaysAgo = Date.now() - 604800000;
+            state.usedNonces = state.usedNonces.filter(n => n.t > sevenDaysAgo);
+
             // 2. 检查 nonce 防双花
-            if (state.usedNonces.includes(payload.nonce)) {
+            if (state.usedNonces.some(n => n.id === payload.nonce)) {
                 throw new Error('该凭证已被使用过');
             }
 
@@ -365,7 +378,8 @@
 
             // 4. 增加余额
             state.balance += payload.amount;
-            state.usedNonces.push(payload.nonce);
+            // 记录新 nonce 并带上时间戳
+            state.usedNonces.push({ id: payload.nonce, t: Date.now() });
             saveState();
             updateUI();
 
@@ -420,7 +434,9 @@
     function copyText(id) {
         const el = document.getElementById(id);
         const text = el.value || el.innerText;
-        navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
+        navigator.clipboard.writeText(text).then(() => {
+            alert('已复制到剪贴板');
+        });
     }
 
     function bufferToBase64(buf) {
@@ -428,11 +444,10 @@
     }
 
     function base64ToBuffer(base64) {
-        const binary_string = window.atob(base64);
-        const len = binary_string.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
         }
         return bytes.buffer;
     }
