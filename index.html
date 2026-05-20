@@ -1,9 +1,12 @@
-<html lang="zh-CN"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BTC 离线密码学代币系统</title>
-<style>
-        :root {
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   BTC 离线密码学代币系统
+  </title>
+  <style>
+   :root {
             --primary-color: #f7931a; /* Bitcoin Orange */
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
@@ -141,72 +144,130 @@
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
         }
-    </style>
-</head>
-<body>
-<div class="container">
-<div class="header">
-<h1>BTC 离线代币系统</h1>
-<p>基于 ECDSA 密码学的完全离线转账</p>
-</div>
-<div class="card">
-<div class="balance-container">
-<div class="label">当前余额</div>
-<div class="balance-value" id="balance">0.00</div>
-<div>Tokens</div>
-</div>
-</div>
-<div class="tabs">
-<button class="tab-btn active" onclick="showTab('identity')">身份</button>
-<button class="tab-btn" onclick="showTab('transfer')">发送</button>
-<button class="tab-btn" onclick="showTab('receive')">接收</button>
-<button class="tab-btn" onclick="showTab('mining')">挖矿/提现</button>
-</div>
-<!-- 身份面板 -->
-<div class="tab-content active card" id="identity">
-<h2>我的身份</h2>
-<div class="alert alert-info" id="no-identity-msg">尚未生成身份，请点击下方按钮开始。</div>
-<div id="identity-info" style="display:none;">
-<span class="label">我的收款地址 (公钥):</span>
-<div class="address-box" id="my-public-key"></div>
-<button class="secondary-btn" onclick="copyText('my-public-key')">复制地址</button>
-</div>
-<button id="gen-identity-btn" onclick="generateNewIdentity()">生成新身份</button>
-<p style="font-size:0.8rem; color:#888;">* 身份信息保存在浏览器本地，请勿清除缓存。</p>
-</div>
-<!-- 转账面板 -->
-<div class="tab-content card" id="transfer">
-<h2>生成转账凭证</h2>
-<span class="label">接收方公钥:</span>
-<input id="dest-pubkey" placeholder="粘贴接收方的公钥" type="text"/>
-<span class="label">转账金额:</span>
-<input id="send-amount" placeholder="0.00" step="0.01" type="number"/>
-<button onclick="createTransferVoucher()">生成凭证字符串</button>
-<div id="voucher-result" style="display:none;">
-<span class="label">转账凭证 (请复制发给对方):</span>
-<textarea id="voucher-output" readonly="" rows="5"></textarea>
-<button class="secondary-btn" onclick="copyText('voucher-output')">复制凭证</button>
-</div>
-</div>
-<!-- 接收面板 -->
-<div class="tab-content card" id="receive">
-<h2>验证并接收</h2>
-<span class="label">粘贴收到的凭证:</span>
-<textarea id="voucher-input" placeholder="粘贴对方发来的 Base64 字符串" rows="5"></textarea>
-<button onclick="processReceiveVoucher()">验证并接收代币</button>
-<div id="receive-status"></div>
-</div>
-<!-- 挖矿/提现面板 -->
-<div class="tab-content card" id="mining">
-<h2>挖矿与提现</h2>
-<div class="alert alert-info">每 2 秒可点击一次生成 1.00 代币。</div>
-<button class="mining-btn" id="mining-btn" onclick="mineToken()">点击挖矿 (每2秒)</button>
-<hr/>
-<button class="withdraw-btn" onclick="withdraw()">提现显示手机号</button>
-</div>
-</div>
-<script>
-    // --- 核心状态 ---
+  </style>
+ </head>
+ <body>
+  <div class="container">
+   <div class="header">
+    <h1>
+     BTC 离线代币系统
+    </h1>
+    <p>
+     基于 ECDSA 密码学的完全离线转账
+    </p>
+   </div>
+   <div class="card">
+    <div class="balance-container">
+     <div class="label">
+      当前余额
+     </div>
+     <div class="balance-value" id="balance">
+      0.00
+     </div>
+     <div>
+      Tokens
+     </div>
+    </div>
+   </div>
+   <div class="tabs">
+    <button class="tab-btn active" data-manus_click_id="1" data-manus_clickable="true" onclick="showTab('identity')">
+     身份
+    </button>
+    <button class="tab-btn" data-manus_click_id="2" data-manus_clickable="true" onclick="showTab('transfer')">
+     发送
+    </button>
+    <button class="tab-btn" data-manus_click_id="3" data-manus_clickable="true" onclick="showTab('receive')">
+     接收
+    </button>
+    <button class="tab-btn" data-manus_click_id="4" data-manus_clickable="true" onclick="showTab('mining')">
+     挖矿/提现
+    </button>
+   </div>
+   <!-- 身份面板 -->
+   <div class="tab-content active card" id="identity">
+    <h2>
+     我的身份
+    </h2>
+    <div class="alert alert-info" id="no-identity-msg">
+     尚未生成身份，请点击下方按钮开始。
+    </div>
+    <div id="identity-info" style="display:none;">
+     <span class="label">
+      我的收款地址 (公钥):
+     </span>
+     <div class="address-box" id="my-public-key">
+     </div>
+     <button class="secondary-btn" onclick="copyText('my-public-key')">
+      复制地址
+     </button>
+    </div>
+    <button data-manus_click_id="5" data-manus_clickable="true" id="gen-identity-btn" onclick="generateNewIdentity()">
+     生成新身份
+    </button>
+    <p style="font-size:0.8rem; color:#888;">
+     * 身份信息保存在浏览器本地，请勿清除缓存。
+    </p>
+   </div>
+   <!-- 转账面板 -->
+   <div class="tab-content card" id="transfer">
+    <h2>
+     生成转账凭证
+    </h2>
+    <span class="label">
+     接收方公钥:
+    </span>
+    <input id="dest-pubkey" placeholder="粘贴接收方的公钥" type="text"/>
+    <span class="label">
+     转账金额:
+    </span>
+    <input id="send-amount" placeholder="0.00" step="0.01" type="number"/>
+    <button onclick="createTransferVoucher()">
+     生成凭证字符串
+    </button>
+    <div id="voucher-result" style="display:none;">
+     <span class="label">
+      转账凭证 (请复制发给对方):
+     </span>
+     <textarea id="voucher-output" readonly="" rows="5"></textarea>
+     <button class="secondary-btn" onclick="copyText('voucher-output')">
+      复制凭证
+     </button>
+    </div>
+   </div>
+   <!-- 接收面板 -->
+   <div class="tab-content card" id="receive">
+    <h2>
+     验证并接收
+    </h2>
+    <span class="label">
+     粘贴收到的凭证:
+    </span>
+    <textarea id="voucher-input" placeholder="粘贴对方发来的 Base64 字符串" rows="5"></textarea>
+    <button onclick="processReceiveVoucher()">
+     验证并接收代币
+    </button>
+    <div id="receive-status">
+    </div>
+   </div>
+   <!-- 挖矿/提现面板 -->
+   <div class="tab-content card" id="mining">
+    <h2>
+     挖矿与提现
+    </h2>
+    <div class="alert alert-info">
+     每 2 秒可点击一次生成 1.00 代币。
+    </div>
+    <button class="mining-btn" id="mining-btn" onclick="mineToken()">
+     点击挖矿 (每2秒)
+    </button>
+    <hr/>
+    <button class="withdraw-btn" onclick="withdraw()">
+     提现显示手机号
+    </button>
+   </div>
+  </div>
+  <script>
+   // --- 核心状态 ---
     let state = {
         balance: 0,
         publicKey: null,
@@ -221,16 +282,7 @@
         if (savedState) {
             const parsed = JSON.parse(savedState);
             state.balance = parsed.balance || 0;
-            
-            // 兼容旧版 usedNonces (纯字符串数组) 并转为带时间戳的对象格式
-            const rawNonces = parsed.usedNonces || [];
-            state.usedNonces = rawNonces.map(n => {
-                if (typeof n === 'string') {
-                    return { id: n, t: Date.now() };
-                }
-                return n;
-            });
-
+            state.usedNonces = parsed.usedNonces || [];
             if (parsed.keyPair) {
                 state.publicKeyBase64 = parsed.keyPair.pub;
                 // 恢复密钥对象
@@ -354,12 +406,8 @@
                 throw new Error('接收方地址不匹配');
             }
 
-            // 自动清理 7 天前的旧 nonce (7 * 24 * 60 * 60 * 1000)
-            const sevenDaysAgo = Date.now() - 604800000;
-            state.usedNonces = state.usedNonces.filter(n => n.t > sevenDaysAgo);
-
             // 2. 检查 nonce 防双花
-            if (state.usedNonces.some(n => n.id === payload.nonce)) {
+            if (state.usedNonces.includes(payload.nonce)) {
                 throw new Error('该凭证已被使用过');
             }
 
@@ -378,8 +426,7 @@
 
             // 4. 增加余额
             state.balance += payload.amount;
-            // 记录新 nonce 并带上时间戳
-            state.usedNonces.push({ id: payload.nonce, t: Date.now() });
+            state.usedNonces.push(payload.nonce);
             saveState();
             updateUI();
 
@@ -434,9 +481,7 @@
     function copyText(id) {
         const el = document.getElementById(id);
         const text = el.value || el.innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('已复制到剪贴板');
-        });
+        navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
     }
 
     function bufferToBase64(buf) {
@@ -444,10 +489,11 @@
     }
 
     function base64ToBuffer(base64) {
-        const binary = atob(base64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) {
-            bytes[i] = binary.charCodeAt(i);
+        const binary_string = window.atob(base64);
+        const len = binary_string.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
         }
         return bytes.buffer;
     }
@@ -474,5 +520,6 @@
 
     // 启动
     init();
-</script>
-</body></html>
+  </script>
+ </body>
+</html>
