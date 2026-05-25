@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BTC 离线密码学代币系统</title>
@@ -162,10 +160,10 @@
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('identity')">身份</button>
-        <button class="tab-btn" onclick="showTab('transfer')">发送</button>
-        <button class="tab-btn" onclick="showTab('receive')">接收</button>
-        <button class="tab-btn" onclick="showTab('mining')">挖矿/提现</button>
+        <button class="tab-btn active" onclick="showTab('identity')" data-manus_clickable="true" data-manus_click_id="1">身份</button>
+        <button class="tab-btn" onclick="showTab('transfer')" data-manus_clickable="true" data-manus_click_id="2">发送</button>
+        <button class="tab-btn" onclick="showTab('receive')" data-manus_clickable="true" data-manus_click_id="3">接收</button>
+        <button class="tab-btn" onclick="showTab('mining')" data-manus_clickable="true" data-manus_click_id="4">挖矿/提现</button>
     </div>
 
     <!-- 身份面板 -->
@@ -177,7 +175,7 @@
             <div id="my-public-key" class="address-box"></div>
             <button class="secondary-btn" onclick="copyText('my-public-key')">复制地址</button>
         </div>
-        <button id="gen-identity-btn" onclick="generateNewIdentity()">生成新身份</button>
+        <button id="gen-identity-btn" onclick="generateNewIdentity()" data-manus_clickable="true" data-manus_click_id="5">生成新身份</button>
         <p style="font-size:0.8rem; color:#888;">* 身份信息保存在浏览器本地，请勿清除缓存。</p>
     </div>
 
@@ -192,7 +190,7 @@
         
         <div id="voucher-result" style="display:none;">
             <span class="label">转账凭证 (请复制发给对方):</span>
-            <textarea id="voucher-output" rows="5" readonly></textarea>
+            <textarea id="voucher-output" rows="5" readonly=""></textarea>
             <button class="secondary-btn" onclick="copyText('voucher-output')">复制凭证</button>
         </div>
     </div>
@@ -472,5 +470,6 @@
     init();
 </script>
 
-</body>
-</html>
+
+
+</body></html>
